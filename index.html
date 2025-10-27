@@ -68,52 +68,104 @@
             </div>
 
             <p class="field-hint">どちらかを入力すると、もう一方が自動的に計算されます。</p>
+            <div class="field-group">
+              <label for="search-mode">検索モード</label>
+              <select id="search-mode" name="searchMode">
+                <option value="free">スパーとピニオンを探索</option>
+                <option value="lock-spur">スパーを固定</option>
+                <option value="lock-pinion">ピニオンを固定</option>
+              </select>
+              <p class="field-hint">「固定」を選ぶと現在入力中の値で片方を固定し、もう片方のみ探索します。</p>
+              <p class="field-error" data-error="search-mode" role="alert" hidden></p>
+            </div>
+
+            <div class="field-group field-range">
+              <div class="range-group">
+                <label for="spur-range-min">検索スパー範囲</label>
+                <div class="range-inputs">
+                  <input id="spur-range-min" name="spurRangeMin" type="number" inputmode="numeric" min="1" step="1" placeholder="最小" />
+                  <span aria-hidden="true">〜</span>
+                  <input id="spur-range-max" name="spurRangeMax" type="number" inputmode="numeric" min="1" step="1" placeholder="最大" />
+                </div>
+              </div>
+              <div class="range-group">
+                <label for="pinion-range-min">検索ピニオン範囲</label>
+                <div class="range-inputs">
+                  <input id="pinion-range-min" name="pinionRangeMin" type="number" inputmode="numeric" min="1" step="1" placeholder="最小" />
+                  <span aria-hidden="true">〜</span>
+                  <input id="pinion-range-max" name="pinionRangeMax" type="number" inputmode="numeric" min="1" step="1" placeholder="最大" />
+                </div>
+              </div>
+              <p class="field-hint">未入力の場合は現在値付近で自動検索します。</p>
+            </div>
+
+            <div class="field-group">
+              <button type="button" class="primary" id="optimize-gear">ギア比を検索</button>
+              <p class="field-hint">モーター回転数とタイヤ回転数の両方を入力し、希望に近いギア比とスパー／ピニオンを検索します。</p>
+            </div>
           </fieldset>
         </form>
       </section>
 
-      <section class="card" aria-live="polite" aria-atomic="true">
-        <h2>計算結果</h2>
-        <div class="result-grid">
-          <div class="result-item">
-            <h3>スパー：ピニオン比</h3>
-            <p data-output="spur-pinion">--</p>
+      <div class="results-container">
+        <section class="card" aria-live="polite" aria-atomic="true">
+          <h2>計算結果</h2>
+          <div class="result-grid">
+            <div class="result-item">
+              <h3>スパー：ピニオン比</h3>
+              <p data-output="spur-pinion">--</p>
+            </div>
+            <div class="result-item">
+              <h3>ギア比</h3>
+              <p data-output="gear-ratio">--</p>
+            </div>
+            <div class="result-item">
+              <h3>モーター回転数</h3>
+              <p data-output="motor-rpm">--</p>
+            </div>
+            <div class="result-item">
+              <h3>タイヤ回転数</h3>
+              <p data-output="tire-rpm">--</p>
+            </div>
           </div>
-          <div class="result-item">
-            <h3>ギア比</h3>
-            <p data-output="gear-ratio">--</p>
-          </div>
-          <div class="result-item">
-            <h3>モーター回転数</h3>
-            <p data-output="motor-rpm">--</p>
-          </div>
-          <div class="result-item">
-            <h3>タイヤ回転数</h3>
-            <p data-output="tire-rpm">--</p>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="card">
-        <h2>マシン管理</h2>
-        <p>よく使うマシンの名称と最終減速比を登録しておくと、入力がスムーズになります。</p>
-        <div class="machine-manager" data-machine-manager></div>
-      </section>
+        <section class="card" id="gear-suggestions" aria-live="polite" aria-atomic="true">
+          <h2>推奨ギア組み合わせ</h2>
+          <div class="result-grid suggestion-summary">
+            <div class="result-item">
+              <h3>目標ギア比</h3>
+              <p data-output="target-gear-ratio">--</p>
+            </div>
+            <div class="result-item">
+              <h3>最適ギア比</h3>
+              <p data-output="best-gear-ratio">--</p>
+            </div>
+            <div class="result-item">
+              <h3>予測タイヤ回転数</h3>
+              <p data-output="suggested-tire-rpm">--</p>
+            </div>
+          </div>
+          <p class="field-hint" data-output="gear-suggestion-message">
+            モーター回転数とタイヤ回転数を入力し「ギア比を検索」を押してください。
+          </p>
+          <ul class="suggestion-list" data-list="gear-suggestions"></ul>
+        </section>
+      </div>
 
-      <section class="card">
-        <h2>モーター管理</h2>
-        <p>よく使うモーターの名称と回転数 (rpm) を登録しておくと、入力がスムーズになります。</p>
-        <div class="motor-manager" data-motor-manager></div>
-      </section>
+      <div class="manager-grid">
+        <section class="card manager-card">
+          <h2>マシン管理</h2>
+          <p>よく使うマシンの名称と最終減速比を登録しておくと、入力がスムーズになります。</p>
+          <div class="machine-manager" data-machine-manager></div>
+        </section>
 
-      <section class="card info">
-        <h2>計算式とメモ</h2>
-        <ul>
-          <li>ギア比 = (スパー歯数 ÷ ピニオン歯数) × 最終減速比</li>
-          <li>タイヤ回転数 = モーター回転数 ÷ ギア比</li>
-          <li>モーター回転数 = タイヤ回転数 × ギア比</li>
-        </ul>
-      </section>
+        <section class="card manager-card">
+          <h2>モーター管理</h2>
+          <p>よく使うモーターの名称と回転数 (rpm) を登録しておくと、入力がスムーズになります。</p>
+          <div class="motor-manager" data-motor-manager></div>
+        </section>
+      </div>
     </main>
 
     <footer class="site-footer">

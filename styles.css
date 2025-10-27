@@ -57,6 +57,13 @@ main {
   align-items: start;
 }
 
+.results-container {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: start;
+}
+
 .card {
   background-color: #ffffff;
   border-radius: 1rem;
@@ -65,6 +72,12 @@ main {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.manager-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 .card.info ul {
@@ -101,6 +114,32 @@ legend {
   gap: 0.4rem;
 }
 
+.field-range {
+  gap: 0.6rem;
+}
+
+.field-range .range-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.range-inputs {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.range-inputs > span {
+  font-weight: 600;
+  text-align: center;
+}
+
+.field-range input[type="number"] {
+  width: 100%;
+}
+
 label {
   font-weight: 600;
 }
@@ -130,10 +169,48 @@ select:focus {
   color: #475569;
 }
 
+.field-error {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #b91c1c;
+}
+
 .result-grid {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.suggestion-summary {
+  margin-bottom: 0.5rem;
+}
+
+.suggestion-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.suggestion-item {
+  border: 1px solid #cbd5f5;
+  border-radius: 0.75rem;
+  padding: 1rem 1.15rem;
+  display: grid;
+  gap: 0.35rem;
+  background-color: #f8fbff;
+}
+
+.suggestion-item strong {
+  font-size: 1.05rem;
+  color: #1d4ed8;
+}
+
+.suggestion-item span {
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+  color: #1f2937;
 }
 
 .result-item {
@@ -257,6 +334,19 @@ button:active {
   .machine-item,
   .motor-item {
     border-color: #334155;
+  }
+
+  .suggestion-item {
+    border-color: #3b4a64;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.28), rgba(37, 99, 235, 0.16));
+  }
+
+  .suggestion-item strong {
+    color: #bfdbfe;
+  }
+
+  .suggestion-item span {
+    color: #cbd5f5;
   }
 }
 
