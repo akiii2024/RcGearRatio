@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RC ギア比計算ツール</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="single">
+    <header class="site-header">
+      <div class="branding">
+        <h1>RC ギア比計算ツール</h1>
+        <p>
+          スパー／ピニオン歯数と最終減速比からギア比を算出し、モーター回転数とタイヤ回転数を相互に計算できます。
+          マシンの最終減速比はカスタム登録可能です。
+        </p>
+      </div>
+    </header>
+
+    <main class="single-layout" aria-labelledby="calculator-heading">
+      <section class="card" id="calculator" tabindex="-1">
+        <h2 id="calculator-heading">入力</h2>
+        <form id="calculator-form" class="input-grid" autocomplete="off">
+          <fieldset>
+            <legend>ギア設定</legend>
+            <div class="field-group">
+              <label for="spur-teeth">スパーギア歯数</label>
+              <input id="spur-teeth" name="spurTeeth" type="number" inputmode="numeric" min="1" step="1" required />
+            </div>
+
+            <div class="field-group">
+              <label for="pinion-teeth">ピニオンギア歯数</label>
+              <input id="pinion-teeth" name="pinionTeeth" type="number" inputmode="numeric" min="1" step="1" required />
+            </div>
+
+            <div class="field-group">
+              <label for="machine-select">マシン</label>
+              <select id="machine-select" name="machine" required>
+                <option value="" data-placeholder>マシンを選択</option>
+              </select>
+              <p class="field-hint">選択すると最終減速比が自動入力されます。</p>
+            </div>
+
+            <div class="field-group">
+              <label for="final-ratio">最終減速比</label>
+              <input id="final-ratio" name="finalRatio" type="number" inputmode="decimal" min="0" step="0.001" required />
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>回転数</legend>
+            <div class="field-group">
+              <label for="motor-select">モーター</label>
+              <select id="motor-select" name="motor">
+                <option value="" data-placeholder>モーターを選択</option>
+              </select>
+              <p class="field-hint">選択するとモーター回転数が自動入力されます。</p>
+            </div>
+
+            <div class="field-group">
+              <label for="motor-rpm">モーター回転数 (rpm)</label>
+              <input id="motor-rpm" name="motorRpm" type="number" inputmode="numeric" min="0" step="0.001" placeholder="例: 30000" />
+            </div>
+
+            <div class="field-group">
+              <label for="tire-rpm">タイヤ回転数 (rpm)</label>
+              <input id="tire-rpm" name="tireRpm" type="number" inputmode="numeric" min="0" step="0.001" placeholder="例: 5000" />
+            </div>
+
+            <p class="field-hint">どちらかを入力すると、もう一方が自動的に計算されます。</p>
+          </fieldset>
+        </form>
+      </section>
+
+      <section class="card" aria-live="polite" aria-atomic="true">
+        <h2>計算結果</h2>
+        <div class="result-grid">
+          <div class="result-item">
+            <h3>スパー：ピニオン比</h3>
+            <p data-output="spur-pinion">--</p>
+          </div>
+          <div class="result-item">
+            <h3>ギア比</h3>
+            <p data-output="gear-ratio">--</p>
+          </div>
+          <div class="result-item">
+            <h3>モーター回転数</h3>
+            <p data-output="motor-rpm">--</p>
+          </div>
+          <div class="result-item">
+            <h3>タイヤ回転数</h3>
+            <p data-output="tire-rpm">--</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>マシン管理</h2>
+        <p>よく使うマシンの名称と最終減速比を登録しておくと、入力がスムーズになります。</p>
+        <div class="machine-manager" data-machine-manager></div>
+      </section>
+
+      <section class="card">
+        <h2>モーター管理</h2>
+        <p>よく使うモーターの名称と回転数 (rpm) を登録しておくと、入力がスムーズになります。</p>
+        <div class="motor-manager" data-motor-manager></div>
+      </section>
+
+      <section class="card info">
+        <h2>計算式とメモ</h2>
+        <ul>
+          <li>ギア比 = (スパー歯数 ÷ ピニオン歯数) × 最終減速比</li>
+          <li>タイヤ回転数 = モーター回転数 ÷ ギア比</li>
+          <li>モーター回転数 = タイヤ回転数 × ギア比</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="copyright-year"></span> RC Gear Ratio Calculator</p>
+    </footer>
+
+    <script src="scripts/common.js" type="module"></script>
+    <script src="scripts/main.js" type="module"></script>
+  </body>
+</html>
