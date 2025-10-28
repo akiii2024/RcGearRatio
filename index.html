@@ -12,7 +12,7 @@
         <h1>RC ギア比計算ツール</h1>
         <p>
           スパー／ピニオン歯数と最終減速比からギア比を算出し、モーター回転数とタイヤ回転数を相互に計算できます。
-          マシンの最終減速比はカスタム登録可能です。
+          マシンの最終減速比とモーター回転数はプリセット登録できます。
         </p>
       </div>
     </header>
@@ -79,6 +79,14 @@
               <p class="field-error" data-error="search-mode" role="alert" hidden></p>
             </div>
 
+            <div class="field-group">
+              <label class="checkbox">
+                <input id="tire-cap-mode" name="tireCapMode" type="checkbox" />
+                ギア検索結果の予測タイヤ回転数を入力値以下に制限する
+              </label>
+              <p class="field-hint">有効にすると、検索結果は入力したタイヤ回転数以下になる組み合わせのみになります。</p>
+            </div>
+
             <div class="field-group field-range">
               <div class="range-group">
                 <label for="spur-range-min">検索スパー範囲</label>
@@ -111,10 +119,12 @@
         <section class="card" aria-live="polite" aria-atomic="true">
           <h2>計算結果</h2>
           <div class="result-grid">
+            <!-- スパー：ピニオン比(非表示) 
             <div class="result-item">
               <h3>スパー：ピニオン比</h3>
               <p data-output="spur-pinion">--</p>
             </div>
+            -->
             <div class="result-item">
               <h3>ギア比</h3>
               <p data-output="gear-ratio">--</p>

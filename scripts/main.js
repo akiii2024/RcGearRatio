@@ -140,6 +140,7 @@ const searchGearSuggestions = () => {
   const pinionMin = readInputNumber(pinionRangeMinInput);
   const pinionMax = readInputNumber(pinionRangeMaxInput);
   const searchMode = searchModeSelect?.value ?? 'free';
+  const enforceTireCap = Boolean(tireCapModeInput?.checked);
 
   if (!motorRpm || !tireRpm) {
     showSuggestionMessage('モーター回転数とタイヤ回転数を両方入力してください。');
@@ -181,10 +182,15 @@ const searchGearSuggestions = () => {
     finalRatio,
     spurRange,
     pinionRange,
+    motorRpm,
+    maxTireRpm: enforceTireCap ? tireRpm : null,
   });
 
   if (suggestions.length === 0) {
-    showSuggestionMessage('指定された条件に合うスパー／ピニオンが見つかりませんでした。範囲を調整してください。');
+    const emptyMessage = enforceTireCap
+      ? '指定された条件に合い、入力したタイヤ回転数以下となるスパー／ピニオンが見つかりませんでした。ギア範囲または制限を見直してください。'
+      : '指定された条件に合うスパー／ピニオンが見つかりませんでした。範囲を調整してください。';
+    showSuggestionMessage(emptyMessage);
     return;
   }
 
@@ -222,6 +228,7 @@ const pinionRangeMinInput = document.querySelector('#pinion-range-min');
 const pinionRangeMaxInput = document.querySelector('#pinion-range-max');
 const searchModeSelect = document.querySelector('#search-mode');
 const searchModeError = document.querySelector('[data-error="search-mode"]');
+const tireCapModeInput = document.querySelector('#tire-cap-mode');
 
 const suggestionOutputs = {
   targetGearRatio: document.querySelector('[data-output="target-gear-ratio"]'),
@@ -246,6 +253,7 @@ const MAX_SUGGESTIONS = 5;
 const DEFAULT_SPUR_SPREAD = 10;
 const DEFAULT_PINION_SPREAD = 6;
 const DEFAULT_SUGGESTION_MESSAGE = 'モーター回転数とタイヤ回転数を入力し「ギア比を検索」を押してください。';
+const TIRE_CAP_EPSILON = 0.000001;
 
 const readInputNumber = (input) => {
   if (!input) {
@@ -487,6 +495,8 @@ const enumerateGearCombinations = ({
   spurRange = DEFAULT_SPUR_RANGE,
   pinionRange = DEFAULT_PINION_RANGE,
   maxResults = MAX_SUGGESTIONS,
+  motorRpm = null,
+  maxTireRpm = null,
 }) => {
   if (!Number.isFinite(targetGearRatio) || !Number.isFinite(finalRatio) || finalRatio <= 0) {
     return [];
@@ -497,10 +507,22 @@ const enumerateGearCombinations = ({
   const spurMax = Math.max(spurMin, Math.ceil(spurRange.max ?? DEFAULT_SPUR_RANGE.max));
   const pinionMin = Math.max(1, Math.floor(pinionRange.min ?? DEFAULT_PINION_RANGE.min));
   const pinionMax = Math.max(pinionMin, Math.ceil(pinionRange.max ?? DEFAULT_PINION_RANGE.max));
+  const enforceTireCap = maxTireRpm != null && Number.isFinite(maxTireRpm) && motorRpm != null && Number.isFinite(motorRpm);
 
   for (let spur = spurMin; spur <= spurMax; spur += 1) {
     for (let pinion = pinionMin; pinion <= pinionMax; pinion += 1) {
       const ratio = (spur / pinion) * finalRatio;
+      if (!Number.isFinite(ratio) || ratio <= 0) {
+        continue;
+      }
+
+      if (enforceTireCap) {
+        const resultingTire = motorRpm / ratio;
+        if (!Number.isFinite(resultingTire) || resultingTire - maxTireRpm > TIRE_CAP_EPSILON) {
+          continue;
+        }
+      }
+
       const diff = Math.abs(ratio - targetGearRatio);
       results.push({ spur, pinion, ratio, diff });
     }
